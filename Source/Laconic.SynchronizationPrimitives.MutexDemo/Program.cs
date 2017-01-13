@@ -31,7 +31,7 @@ namespace Laconic.SynchronizationPrimitives.MutexDemo
                 ConsoleMutex.WaitOne();
                 Console.SetCursorPosition(i, id);
                 Console.Write((char) ('A' + id));
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 ConsoleMutex.ReleaseMutex();
             }
         }
