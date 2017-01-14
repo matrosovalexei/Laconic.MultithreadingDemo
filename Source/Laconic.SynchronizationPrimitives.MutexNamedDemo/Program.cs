@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Threading;
 
-namespace Laconic.SynchronizationPrimitives.MutexAbandonedDemo
+namespace Laconic.SynchronizationPrimitives.MutexNamedDemo
 {
     public class Program
     {
         private const int ThreadCount = 8;
-        private const int ThreadToAbortId = 3;
 
-        private static readonly Mutex ConsoleMutex = new Mutex(true);
+        private static readonly bool IsNewMutex;
+        private static readonly Mutex ConsoleMutex;
+
+        static Program()
+        {
+           ConsoleMutex = new Mutex(false, typeof(Program).FullName + typeof(Mutex).FullName, out IsNewMutex);
+        }
 
         public static void Main(string[] args)
         {
+            Console.WriteLine($"{nameof(IsNewMutex)} = {IsNewMutex}");
+
+            ConsoleMutex.WaitOne();
             for (var i = 0; i < ThreadCount; i++)
             {
                 var thread = new Thread(ThreadMain);
@@ -31,14 +39,8 @@ namespace Laconic.SynchronizationPrimitives.MutexAbandonedDemo
                 try
                 {
                     ConsoleMutex.WaitOne();
-
-                    if (id == ThreadToAbortId && i == 4)
-                    {
-                        Thread.CurrentThread.Abort();
-                    }
-
-                    Console.SetCursorPosition(i, id);
-                    Console.Write((char)('A' + id));
+                    Console.SetCursorPosition(i, id + 2);
+                    Console.Write((char) ('A' + id));
                     Thread.Sleep(200);
                     ConsoleMutex.ReleaseMutex();
                 }

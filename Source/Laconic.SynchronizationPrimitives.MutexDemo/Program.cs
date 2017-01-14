@@ -16,7 +16,6 @@ namespace Laconic.SynchronizationPrimitives.MutexDemo
                 var thread = new Thread(ThreadMain);
                 thread.Start(i);
             }
-
             ConsoleMutex.ReleaseMutex();
 
             Console.ReadLine();
